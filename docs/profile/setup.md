@@ -1,4 +1,4 @@
-<!-- generated-from-hash: df881d416a58175e -->
+<!-- generated-from-hash: 29fc2bc9505b8d97 -->
 
 # Setup de Perfil
 
@@ -15,16 +15,16 @@
 ## Campos por step
 
 ### 1. Identidade
-- **name** (`str`) — Nome completo do usuário.
-- **username** (`str`) — Nome de usuário desejado.
+- **name** (`str`) — nome do usuário.
+- **username** (`str`) — nome de usuário escolhido.
 
 ### 2. Sobre
-- **bio** (`str`) — Breve descrição sobre o usuário.
+- **bio** (`str`) — biografia ou descrição pessoal.
 
 ### 3. Preferências
-- **interests** (`list`) — Lista de interesses do usuário.
-- **theme** (`str`) — Tema preferido para a interface.
-- **language** (`str`) — Idioma preferido do usuário.
+- **interests** (`list`) — lista de interesses do usuário.
+- **theme** (`str`) — tema preferido da interface.
+- **language** (`str`) — idioma preferido.
 
 ## Plataformas suportadas
 
@@ -49,8 +49,8 @@
 
 ```python
 import flet as ft
-from wizards.profile.setup import ProfileSetupWizard
-from wizards.core import WizardTheme
+from flet_wizards.profile.setup import ProfileSetupWizard
+from flet_wizards.core import WizardTheme
 
 
 async def main(page: ft.Page) -> None:

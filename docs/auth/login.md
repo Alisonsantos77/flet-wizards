@@ -1,4 +1,4 @@
-<!-- generated-from-hash: 36cee0e2bfe8eeba -->
+<!-- generated-from-hash: 06df767a18943e31 -->
 
 # Login Clássico
 
@@ -14,7 +14,7 @@
 ## Campos por step
 
 ### 1. Acesso
-- **email** (str) — e-mail do usuário.
+- **email** (`str`) — endereço de e-mail do usuário.
 
 ### 2. Confirmação
 _Não captura dados novos — apenas revisa o que foi preenchido._
@@ -29,16 +29,16 @@ _Não captura dados novos — apenas revisa o que foi preenchido._
 
 ## Retorno do `on_complete`
 
-| Campo  | Tipo |
-|--------|------|
-| email  | str  |
+| Campo | Tipo |
+|-------|------|
+| email | str  |
 
 ## Uso
 
 ```python
 import flet as ft
-from wizards.auth.login import AuthLoginWizard
-from wizards.core import WizardTheme
+from flet_wizards.auth.login import AuthLoginWizard
+from flet_wizards.core import WizardTheme
 
 
 async def main(page: ft.Page) -> None:

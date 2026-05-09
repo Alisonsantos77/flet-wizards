@@ -1,4 +1,4 @@
-<!-- generated-from-hash: 45e7a76d5e5964ec -->
+<!-- generated-from-hash: a536bf3b4f618de3 -->
 
 # Recuperar Senha
 
@@ -15,7 +15,7 @@
 ## Campos por step
 
 ### 1. E-mail
-- **email** (str) — endereço de e-mail do usuário.
+- **email** (`str`) — endereço de e-mail do usuário.
 
 ### 2. Código
 - _Não captura dados novos — apenas revisa o que foi preenchido._
@@ -41,8 +41,8 @@
 
 ```python
 import flet as ft
-from wizards.auth.recovery import AuthRecoveryWizard
-from wizards.core import WizardTheme
+from flet_wizards.auth.recovery import AuthRecoveryWizard
+from flet_wizards.core import WizardTheme
 
 
 async def main(page: ft.Page) -> None:

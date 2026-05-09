@@ -34,7 +34,7 @@ Por enquanto, clone o repo e use `uv sync` para instalar as dependências.
 
 ```python
 import flet as ft
-from wizards.auth.login import AuthLoginWizard
+from flet_wizards.auth.login import AuthLoginWizard
 
 async def main(page: ft.Page):
     page.render(lambda: AuthLoginWizard(on_complete=lambda d: print(d)))

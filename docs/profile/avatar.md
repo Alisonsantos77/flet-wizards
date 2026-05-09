@@ -1,4 +1,4 @@
-<!-- generated-from-hash: e59e4ab29cff7b5f -->
+<!-- generated-from-hash: 0ea0457cc561ede1 -->
 
 # Avatar
 
@@ -6,19 +6,19 @@
 
 ## Steps
 
-| #  | Nome      |
-|----|-----------|
-| 1  | Origem    |
-| 2  | Configurar |
-| 3  | Confirmar  |
+| # | Nome       |
+|---|------------|
+| 1 | Origem     |
+| 2 | Configurar  |
+| 3 | Confirmar  |
 
 ## Campos por step
 
 ### 1. Origem
-- **source** (`str`) — origem do avatar (arquivo, URL ou iniciais).
+- **source** (str) — origem do avatar (arquivo, URL ou iniciais).
 
 ### 2. Configurar
-- **value** (`str`) — valor configurado para o avatar.
+- **value** (str) — valor do avatar configurado.
 
 ### 3. Confirmar
 _Não captura dados novos — apenas revisa o que foi preenchido._
@@ -42,8 +42,8 @@ _Não captura dados novos — apenas revisa o que foi preenchido._
 
 ```python
 import flet as ft
-from wizards.profile.avatar import ProfileAvatarWizard
-from wizards.core import WizardTheme
+from flet_wizards.profile.avatar import ProfileAvatarWizard
+from flet_wizards.core import WizardTheme
 
 
 async def main(page: ft.Page) -> None:

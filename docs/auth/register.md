@@ -1,4 +1,4 @@
-<!-- generated-from-hash: 2e1304e38e43496b -->
+<!-- generated-from-hash: 13ca91c5512b97fe -->
 
 # Cadastro
 
@@ -15,11 +15,11 @@
 ## Campos por step
 
 ### 1. Conta
-- **email** (`str`) — endereço de e-mail do usuário.
+- **email** (str) — endereço de e-mail do usuário.
 
 ### 2. Perfil
-- **name** (`str`) — nome do usuário.
-- **role** (`str`) — papel ou função do usuário.
+- **name** (str) — nome do usuário.
+- **role** (str) — papel ou função do usuário.
 
 ### 3. Confirmar
 _Não captura dados novos — apenas revisa o que foi preenchido._
@@ -44,8 +44,8 @@ _Não captura dados novos — apenas revisa o que foi preenchido._
 
 ```python
 import flet as ft
-from wizards.auth.register import AuthRegisterWizard
-from wizards.core import WizardTheme
+from flet_wizards.auth.register import AuthRegisterWizard
+from flet_wizards.core import WizardTheme
 
 
 async def main(page: ft.Page) -> None:
