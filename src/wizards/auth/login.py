@@ -31,7 +31,7 @@ META = register(
         id="auth.login",
         name="Login Clássico",
         category="auth",
-        description="Wizard de autenticação com e-mail e senha em dois steps.",
+        description="Wizard de login com e-mail e senha em dois steps.",
         steps=["Acesso", "Confirmação"],
         platforms=[
             ft.PagePlatform.WINDOWS,
