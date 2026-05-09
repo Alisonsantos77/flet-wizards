@@ -1,69 +1,38 @@
-# FletWizards app
+# flet-wizards
 
-## Run the app
+Gallery de templates de wizard multi-step para Flet, prontos para reuso.
 
-### uv
+## Templates disponíveis
 
-Run as a desktop app:
+| Categoria | Nome | Steps | Descrição |
+|-----------|------|-------|-----------|
+| auth | [Login Clássico](docs/auth/login.md) | 2 | Wizard de login com e-mail e senha em dois steps. |
+| auth | [Recuperar Senha](docs/auth/recovery.md) | 3 | Wizard de recuperação de senha com código de verificação. |
+| auth | [Cadastro](docs/auth/register.md) | 3 | Wizard de cadastro com conta, perfil e confirmação. |
+| profile | [Avatar](docs/profile/avatar.md) | 3 | Wizard de configuração de avatar com 3 origens (arquivo, URL, iniciais). |
+| profile | [Editar Perfil](docs/profile/edit.md) | 3 | Wizard de edição de perfil com diff visual no resumo. |
+| profile | [Setup de Perfil](docs/profile/setup.md) | 3 | Wizard de onboarding com identidade, interesses e preferências. |
 
-```bash
+## Uso rápido
+
+```python
+import flet as ft
+from wizards.auth.login import AuthLoginWizard
+
+async def main(page: ft.Page):
+    page.render(lambda: AuthLoginWizard(on_complete=lambda d: print(d)))
+
+ft.run(main)
+```
+
+## Gallery
+
+```powershell
 uv run flet run
 ```
 
-Run as a web app:
+Abre o showcase com sidebar por categoria, seletor de tema (4 paletas) e preview ao vivo de cada template.
 
-```bash
-uv run flet run --web
-```
+---
 
-For more details on running the app, refer to the [Getting Started Guide](https://docs.flet.dev/).
-
-## Build the app
-
-### Android
-
-```bash
-flet build apk -v
-```
-
-For more details on building and signing `.apk` or `.aab`, refer to the [Android Packaging Guide](https://docs.flet.dev/publish/android/).
-
-### iOS
-
-```bash
-flet build ipa -v
-```
-
-For more details on building and signing `.ipa`, refer to the [iOS Packaging Guide](https://docs.flet.dev/publish/ios/).
-
-### macOS
-
-```bash
-flet build macos -v
-```
-
-For more details on building macOS package, refer to the [macOS Packaging Guide](https://docs.flet.dev/publish/macos/).
-
-### Linux
-
-```bash
-flet build linux -v
-```
-
-For more details on building Linux package, refer to the [Linux Packaging Guide](https://docs.flet.dev/publish/linux/).
-
-### Windows
-
-```bash
-flet build windows -v
-```
-
-For more details on building Windows package, refer to the [Windows Packaging Guide](https://docs.flet.dev/publish/windows/).
-
-### Web
-
-```bash
-flet build web -v
-```
-
-For more details on building Web app, refer to the [Web Packaging Guide](https://docs.flet.dev/publish/web/).
+_Documentação regenerada automaticamente por `pipeline/cocoindex_pipeline.py`._
