@@ -1,14 +1,27 @@
+<!-- generated-from-hash: e59e4ab29cff7b5f -->
+
 # Avatar
 
 > Wizard de configuração de avatar com 3 origens (arquivo, URL, iniciais).
 
 ## Steps
 
-| # | Nome       |
-|---|------------|
-| 1 | Origem     |
-| 2 | Configurar |
-| 3 | Confirmar  |
+| #  | Nome      |
+|----|-----------|
+| 1  | Origem    |
+| 2  | Configurar |
+| 3  | Confirmar  |
+
+## Campos por step
+
+### 1. Origem
+- **source** (`str`) — origem do avatar (arquivo, URL ou iniciais).
+
+### 2. Configurar
+- **value** (`str`) — valor configurado para o avatar.
+
+### 3. Confirmar
+_Não captura dados novos — apenas revisa o que foi preenchido._
 
 ## Plataformas suportadas
 
@@ -28,14 +41,23 @@
 ## Uso
 
 ```python
-from wizards.profile.avatar import Avatar
+import flet as ft
+from wizards.profile.avatar import ProfileAvatarWizard
+from wizards.core import WizardTheme
 
-def on_complete(data):
-    print(f"Fonte: {data['source']}, Valor: {data['value']}")
 
-wizard = Avatar(theme="dark", on_complete=on_complete)
+async def main(page: ft.Page) -> None:
+    async def on_complete(data: dict) -> None:
+        print(data["source"])
+        print(data["value"])
+
+    page.render(lambda: ProfileAvatarWizard(
+        theme=WizardTheme.SLATE,
+        on_complete=on_complete,
+    ))
+
+
+ft.run(main)
 ```
 
-## Mock no gallery
-
-O wizard expõe `mock=True` para abrir já no último step de dados com valores fictícios — útil em previews.
+Mock no gallery: O wizard expõe `mock=True` para abrir já no último step de dados com valores fictícios — útil em previews dentro do gallery showcase.

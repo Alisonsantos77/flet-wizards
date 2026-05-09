@@ -1,6 +1,14 @@
 # flet-wizards
 
-Gallery de templates de wizard multi-step para Flet, prontos para reuso.
+[![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/)
+[![Flet](https://img.shields.io/badge/flet-0.85+-purple.svg)](https://flet.dev)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
+Coleção de templates de wizard multi-step prontos para reutilizar em apps Flet.
+Cada template é uma `@ft.component` autocontida com estado reativo (`@ft.observable`),
+sistema de temas (Slate / Emerald / Rose / Azure), validação de plataforma e callback
+`on_complete` tipado. Inclui um gallery showcase estilo Microsoft Store para visualizar
+todos os templates ao vivo durante o desenvolvimento.
 
 ## Templates disponíveis
 
@@ -12,6 +20,15 @@ Gallery de templates de wizard multi-step para Flet, prontos para reuso.
 | profile | [Avatar](docs/profile/avatar.md) | 3 | Wizard de configuração de avatar com 3 origens (arquivo, URL, iniciais). |
 | profile | [Editar Perfil](docs/profile/edit.md) | 3 | Wizard de edição de perfil com diff visual no resumo. |
 | profile | [Setup de Perfil](docs/profile/setup.md) | 3 | Wizard de onboarding com identidade, interesses e preferências. |
+
+## Instalação
+
+```bash
+# em breve no PyPI
+# pip install flet-wizards
+```
+
+Por enquanto, clone o repo e use `uv sync` para instalar as dependências.
 
 ## Uso rápido
 
