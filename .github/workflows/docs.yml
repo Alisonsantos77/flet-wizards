@@ -10,6 +10,7 @@ on:
     branches: [main]
     paths:
       - 'src/wizards/**'
+      - 'pipeline/**'
   workflow_dispatch:
 
 permissions:
