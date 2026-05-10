@@ -3,6 +3,25 @@
 Todas as mudanças relevantes deste projeto são documentadas aqui.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e o versionamento usa [SemVer](https://semver.org/lang/pt-BR/).
 
+## [0.1.1] — 2026-05-10
+
+Release de housekeeping focado em metadados PyPI e documentação. Sem mudanças funcionais nos wizards — a API pública é idêntica à 0.1.0.
+
+### Removido
+
+- Pipeline `pipeline/cocoindex_pipeline.py` e `pipeline/__init__.py` que geravam docs via OpenAI.
+- Workflow `.github/workflows/docs.yml` que disparava o pipeline a cada push.
+- Dependência opcional `openai` (extra `[pipeline]`) do `pyproject.toml`.
+
+### Alterado
+
+- **Documentação dos templates** (`docs/`) agora é escrita pelo Claude Code lendo o código fonte sob demanda e commitada manualmente. Não há mais geração automática nem chamadas a APIs externas.
+- **Metadados PyPI** atualizados em `pyproject.toml`:
+  - `keywords = ["flet", "wizard", "ui", "components", "python", "mobile", "desktop"]`.
+  - Classifiers movidos para `Development Status :: 4 - Beta`, com `Topic :: Software Development :: Widget Sets`, `Operating System :: OS Independent` e `Typing :: Typed` adicionados.
+  - `[project.urls]` ampliado com `Repository`, `Issues` e `Changelog`.
+- **README.md** reescrito com badge de versão PyPI, tabela de templates linkando docs, instruções reais de instalação (`pip install flet-wizards`), exemplo de uso atualizado e seção "Contribuindo" detalhando o passo a passo de adicionar um novo template via `WizardMeta`.
+
 ## [0.1.0] — 2026-05-10
 
 Primeiro release público no PyPI. Foco em validar a API pública dos wizards e o gallery showcase antes de iniciar a fase de extensão (v0.2.0).
