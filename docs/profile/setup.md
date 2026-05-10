@@ -1,74 +1,148 @@
-<!-- generated-from-hash: 29fc2bc9505b8d97 -->
+# ProfileSetupWizard
 
-# Setup de Perfil
+Onboarding de perfil em **3 steps de dados + tela de sucesso**, com seleção de tema ao vivo.
 
-> Wizard de onboarding com identidade, interesses e preferências.
+- **ID:** `profile.setup`
+- **Categoria:** `profile`
+- **Módulo:** `flet_wizards.profile.setup`
+- **Importação pública:** `from flet_wizards import ProfileSetupWizard`
+
+---
+
+## Descrição
+
+Coleta identidade (nome + username), bio + interesses (multi-select) e preferências (tema + idioma). O step 2 troca o tema visual do próprio wizard ao vivo: clicar em um swatch atualiza `state.theme_key` **e** `state.theme`, repintando a UI imediatamente.
+
+Diferença vs auth wizards: aqui o **`state.theme_key` é a fonte de verdade** do tema. Por isso o sync `state.theme = theme` (do prop) **não é aplicado após o mount inicial** — caso contrário o prop sobrescreveria a escolha do usuário a cada re-render.
+
+---
 
 ## Steps
 
-| #  | Nome         |
-|----|--------------|
-| 1  | Identidade   |
-| 2  | Sobre        |
-| 3  | Preferências  |
+| Índice | Label | Conteúdo |
+|---|---|---|
+| 0 | **Identidade** | Nome + username. |
+| 1 | **Sobre** | Bio multiline + 6 chips de interesse multi-select. |
+| 2 | **Preferências** | 4 swatches de tema (live preview) + dropdown de idioma. |
+| 3 | **Sucesso** | "Perfil pronto, {primeiro nome}." + botão "Recomeçar". |
+
+---
 
 ## Campos por step
 
-### 1. Identidade
-- **name** (`str`) — nome do usuário.
-- **username** (`str`) — nome de usuário escolhido.
+### Step 0 — Identidade
 
-### 2. Sobre
-- **bio** (`str`) — biografia ou descrição pessoal.
+| Campo | Tipo | UI |
+|---|---|---|
+| `name` | `str` | `form_field("NOME", ..., "Nome completo")` |
+| `username` | `str` | `form_field("USERNAME", ..., "ada.lovelace")` |
 
-### 3. Preferências
-- **interests** (`list`) — lista de interesses do usuário.
-- **theme** (`str`) — tema preferido da interface.
-- **language** (`str`) — idioma preferido.
+### Step 1 — Sobre
+
+| Campo | Tipo | UI |
+|---|---|---|
+| `bio` | `str` | `form_field("BIO", ..., multiline=True)` |
+| `interests` | `list[str]` | 6 chips multi-select: `Python`, `DevOps`, `Design`, `AI`, `Data`, `Mobile` |
+
+### Step 2 — Preferências
+
+| Campo | Tipo | UI |
+|---|---|---|
+| `theme_key` | `str` | 4 swatches: `Slate`, `Emerald`, `Rose`, `Azure` (preview com 3 dots: primary/secondary/accent) |
+| `language` | `str` | `ft.Dropdown` com `on_select` (não `on_change` no Flet 0.85+) |
+
+Idiomas disponíveis: `pt-BR`, `en-US`, `es-ES`, `fr-FR`.
+
+Trocar swatch chama `pick_theme(name)` que faz **dois** updates no state:
+
+```python
+state.theme_key = name
+state.theme = THEMES_BY_NAME[name]
+```
+
+A reatividade do `@ft.observable` propaga a mudança para todos os componentes filhos.
+
+### Step 3 — Sucesso
+
+Check (72px) + "Perfil pronto, {primeiro nome}." + botão "Recomeçar" → `state.reset()`.
+
+---
 
 ## Plataformas suportadas
 
-- Windows
-- macOS
-- Linux
-- Android
-- iOS
+```python
+[
+    ft.PagePlatform.WINDOWS,
+    ft.PagePlatform.MACOS,
+    ft.PagePlatform.LINUX,
+    ft.PagePlatform.ANDROID,
+    ft.PagePlatform.IOS,
+]
+```
+
+---
 
 ## Retorno do `on_complete`
 
-| Campo     | Tipo  |
-|-----------|-------|
-| name      | str   |
-| username  | str   |
-| bio       | str   |
-| interests  | list  |
-| theme     | str   |
-| language  | str   |
+```python
+{
+    "name": str,
+    "username": str,
+    "bio": str,
+    "interests": list,   # list[str]
+    "theme": str,        # chave: "Slate" | "Emerald" | "Rose" | "Azure"
+    "language": str,     # ex.: "pt-BR"
+}
+```
 
-## Uso
+Schema declarado em `META.on_complete_schema`. O campo `theme` no payload é a string `theme_key` — consumidores podem reconstruir a paleta via `THEMES_BY_NAME[theme]`.
+
+---
+
+## Exemplo de uso
 
 ```python
 import flet as ft
-from flet_wizards.profile.setup import ProfileSetupWizard
-from flet_wizards.core import WizardTheme
+from flet_wizards import ProfileSetupWizard, WizardTheme
+
+
+@ft.component
+def App() -> ft.Control:
+    async def handle_setup(data: dict) -> None:
+        # data == {"name": ..., "username": ..., "bio": ...,
+        #          "interests": [...], "theme": "Slate", "language": "pt-BR"}
+        ...
+
+    return ProfileSetupWizard(
+        theme=WizardTheme.SLATE,
+        on_complete=handle_setup,
+    )
 
 
 async def main(page: ft.Page) -> None:
-    async def on_complete(data: dict) -> None:
-        print(data["name"])
-        print(data["username"])
-        print(data["bio"])
-        print(data["interests"])
-        print(data["theme"])
-        print(data["language"])
-
-    page.render(lambda: ProfileSetupWizard(
-        theme=WizardTheme.SLATE,
-        on_complete=on_complete,
-    ))
+    page.padding = 0
+    page.bgcolor = "#0B0B0F"
+    page.render(App)
 
 
 ft.run(main)
 ```
 
-Mock no gallery: O wizard expõe `mock=True` para abrir já no último step de dados com valores fictícios — útil em previews dentro do gallery showcase.
+---
+
+## Mock no gallery
+
+`flet_wizards.core.mock_data.PROFILE_SETUP`:
+
+```python
+PROFILE_SETUP = {
+    "name": "Ada Lovelace",
+    "username": "ada.lovelace",
+    "bio": "Engenheira de software apaixonada por sistemas distribuídos.",
+    "interests": ["Python", "DevOps"],
+    "theme_key": "Slate",
+    "language": "pt-BR",
+}
+```
+
+Em modo mock o wizard abre no step 2 (Preferências) com Slate selecionado e idioma `pt-BR`. Trocar de swatch repinta o wizard inteiro ao vivo.
