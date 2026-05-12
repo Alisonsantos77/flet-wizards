@@ -86,13 +86,13 @@ WizardTheme.AZURE = WizardTheme(
 )
 
 WizardTheme.FOREST = WizardTheme(
-    primary="#FFFDF5",
-    secondary="#E8F5E9",
-    accent="#4ADE80",
-    bg="#0D1F0E",
-    surface="#112614",
-    card="#1A3B1D",
-    panel="#0A1A0B",
+    primary="#4ADE80",
+    secondary="#86EFAC",
+    accent="#22C55E",
+    bg="#071A09",
+    surface="#0D1F0F",
+    card="#1A3D1E",
+    panel="#091409",
     border="#2D5C33",
     text="#FFFFFF",
     sub="#B8D4BB",

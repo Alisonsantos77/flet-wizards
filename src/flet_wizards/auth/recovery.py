@@ -160,7 +160,6 @@ def StepCodigo(state: AuthRecoveryState) -> ft.Control:
     C = state.card()
 
     code_v, set_code = ft.use_state(state.code)
-    refs, _ = ft.use_state([ft.Ref[ft.TextField]() for _ in range(CODE_LEN)])
 
     def on_change(i: int):
         def handler(e):
@@ -168,24 +167,13 @@ def StepCodigo(state: AuthRecoveryState) -> ft.Control:
             new_code = _set_digit(code_v, i, val)
             set_code(new_code)
             state.code = new_code
-            if not val and i > 0 and refs[i - 1].current:
-                ft.context.page.run_task(refs[i - 1].current.focus)
-
-        return handler
-
-    def on_submit(i: int):
-        def handler(e):
-            if i < CODE_LEN - 1 and refs[i + 1].current:
-                ft.context.page.run_task(refs[i + 1].current.focus)
 
         return handler
 
     def digit_field(i: int) -> ft.TextField:
         return ft.TextField(
-            ref=refs[i],
             value=_get_digit(code_v, i),
             on_change=on_change(i),
-            on_submit=on_submit(i),
             text_align=ft.TextAlign.CENTER,
             text_size=20,
             width=48,
