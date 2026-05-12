@@ -155,10 +155,11 @@ def StepCodigo(state: AuthTwoFactorState) -> ft.Control:
             new_code = _set_digit(code_v, i, val)
             set_code(new_code)
             state.code = new_code
+            page = ft.context.page
             if val and i < CODE_LEN - 1 and refs[i + 1].current is not None:
-                refs[i + 1].current.focus()
+                page.run_task(refs[i + 1].current.focus)
             elif not val and i > 0 and refs[i - 1].current is not None:
-                refs[i - 1].current.focus()
+                page.run_task(refs[i - 1].current.focus)
 
         return handler
 
@@ -187,8 +188,7 @@ def StepCodigo(state: AuthTwoFactorState) -> ft.Control:
         width=64,
         height=64,
         border_radius=32,
-        bgcolor=state.panel(),
-        border=ft.Border.all(1, P),
+        bgcolor=P,
         alignment=ft.Alignment(0, 0),
         content=ft.Text("🛡️", size=28),
     )
