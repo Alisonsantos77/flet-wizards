@@ -38,23 +38,40 @@ def ghost_button(
     )
 
 
+def _is_light(hex_color: str) -> bool:
+    """Devolve True se a luminância relativa do hex > 0.5."""
+    h = hex_color.lstrip("#")
+    r = int(h[0:2], 16) / 255
+    g = int(h[2:4], 16) / 255
+    b = int(h[4:6], 16) / 255
+    return (0.299 * r + 0.587 * g + 0.114 * b) > 0.5
+
+
 def primary_button(
     label: str,
     on_tap: Callable,
     color: str,
     loading: bool = False,
     loading_label: str = "Carregando...",
+    text_color: str | None = None,
 ) -> ft.GestureDetector:
-    """Botão primário com estado opcional de loading (ProgressRing + label)."""
+    """Botão primário com estado opcional de loading (ProgressRing + label).
+
+    `text_color` resolve automaticamente para um valor contrastante quando
+    `None`: se `color` for claro (luminância > 0.5), o texto vira escuro
+    (`#0F172A`); caso contrário, branco. Callers podem passar `text_color`
+    explicitamente para casar com o `bg` exato do tema.
+    """
+    fg = text_color if text_color is not None else ("#0F172A" if _is_light(color) else "#FFFFFF")
     content = (
         ft.Row(
             [
-                ft.ProgressRing(width=13, height=13, stroke_width=2, color="#FFFFFF"),
+                ft.ProgressRing(width=13, height=13, stroke_width=2, color=fg),
                 ft.Container(width=8),
                 ft.Text(
                     loading_label,
                     size=13,
-                    color="#FFFFFF",
+                    color=fg,
                     weight=ft.FontWeight.BOLD,
                 ),
             ],
@@ -62,7 +79,7 @@ def primary_button(
             tight=True,
         )
         if loading
-        else ft.Text(label, size=13, color="#FFFFFF", weight=ft.FontWeight.BOLD)
+        else ft.Text(label, size=13, color=fg, weight=ft.FontWeight.BOLD)
     )
     return ft.GestureDetector(
         on_tap=on_tap,

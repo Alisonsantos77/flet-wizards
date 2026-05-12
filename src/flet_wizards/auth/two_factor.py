@@ -84,19 +84,6 @@ def _filled_digits(code: str) -> int:
     return sum(1 for c in code if c != PAD_CHAR)
 
 
-async def _do_focus(ref: ft.TextField) -> None:
-    """Foca um TextField, engolindo RuntimeError de controle desmontado.
-
-    O Flet pode lançar `RuntimeError` durante transições rápidas de step
-    quando o controle alvo já saiu da árvore. Como o foco é "best effort"
-    (a UX degrada graciosamente sem ele), a exceção é ignorada.
-    """
-    try:
-        await ref.focus()
-    except RuntimeError:
-        pass
-
-
 @ft.component
 def _GeometricBackdrop(state: AuthTwoFactorState) -> ft.Control:
     """Malha sutil de pontos geométricos transmitindo ambiente seguro.
@@ -168,11 +155,15 @@ def StepCodigo(state: AuthTwoFactorState) -> ft.Control:
             new_code = _set_digit(code_v, i, val)
             set_code(new_code)
             state.code = new_code
-            page = ft.context.page
-            if val and i < CODE_LEN - 1 and refs[i + 1].current:
-                page.run_task(_do_focus, refs[i + 1].current)
-            elif not val and i > 0 and refs[i - 1].current:
-                page.run_task(_do_focus, refs[i - 1].current)
+            if not val and i > 0 and refs[i - 1].current:
+                ft.context.page.run_task(refs[i - 1].current.focus)
+
+        return handler
+
+    def on_submit(i: int):
+        def handler(e):
+            if i < CODE_LEN - 1 and refs[i + 1].current:
+                ft.context.page.run_task(refs[i + 1].current.focus)
 
         return handler
 
@@ -182,6 +173,7 @@ def StepCodigo(state: AuthTwoFactorState) -> ft.Control:
             ref=refs[i],
             value=_get_digit(code_v, i),
             on_change=on_change(i),
+            on_submit=on_submit(i),
             text_align=ft.TextAlign.CENTER,
             text_size=22,
             width=46,

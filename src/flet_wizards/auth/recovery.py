@@ -110,19 +110,6 @@ def _strength(password: str) -> tuple[str, str, float]:
     return levels[min(score, 4)]
 
 
-async def _do_focus(ref: ft.TextField) -> None:
-    """Foca um TextField, engolindo RuntimeError de controle desmontado.
-
-    O Flet pode lançar `RuntimeError` durante transições rápidas de step
-    quando o controle alvo já saiu da árvore. Como o foco é "best effort"
-    (a UX degrada graciosamente sem ele), a exceção é ignorada.
-    """
-    try:
-        await ref.focus()
-    except RuntimeError:
-        pass
-
-
 @ft.component
 def StepEmailRecovery(state: AuthRecoveryState) -> ft.Control:
     """Captura o e-mail da conta e instrui sobre o envio do código."""
@@ -181,11 +168,15 @@ def StepCodigo(state: AuthRecoveryState) -> ft.Control:
             new_code = _set_digit(code_v, i, val)
             set_code(new_code)
             state.code = new_code
-            page = ft.context.page
-            if val and i < CODE_LEN - 1 and refs[i + 1].current:
-                page.run_task(_do_focus, refs[i + 1].current)
-            elif not val and i > 0 and refs[i - 1].current:
-                page.run_task(_do_focus, refs[i - 1].current)
+            if not val and i > 0 and refs[i - 1].current:
+                ft.context.page.run_task(refs[i - 1].current.focus)
+
+        return handler
+
+    def on_submit(i: int):
+        def handler(e):
+            if i < CODE_LEN - 1 and refs[i + 1].current:
+                ft.context.page.run_task(refs[i + 1].current.focus)
 
         return handler
 
@@ -194,6 +185,7 @@ def StepCodigo(state: AuthRecoveryState) -> ft.Control:
             ref=refs[i],
             value=_get_digit(code_v, i),
             on_change=on_change(i),
+            on_submit=on_submit(i),
             text_align=ft.TextAlign.CENTER,
             text_size=20,
             width=48,
