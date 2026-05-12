@@ -104,16 +104,8 @@ def Sidebar(
             spacing=1,
         )
 
-        connector = (
-            ft.Container(
-                margin=ft.Margin(17, 0, 0, 0),
-                width=1,
-                height=24,
-                bgcolor=P if done else B,
-                animate=ft.Animation(400, ft.AnimationCurve.EASE_OUT_CUBIC),
-            )
-            if i < total - 1
-            else ft.Container(height=0)
+        spacer = (
+            ft.Container(height=14) if i < total - 1 else ft.Container(height=0)
         )
 
         return ft.Column(
@@ -129,7 +121,7 @@ def Sidebar(
                     spacing=0,
                     vertical_alignment=ft.CrossAxisAlignment.CENTER,
                 ),
-                connector,
+                spacer,
             ],
             spacing=0,
         )

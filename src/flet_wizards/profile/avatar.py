@@ -1,17 +1,16 @@
 """ProfileAvatarWizard — escolha de avatar em 3 steps.
 
 Steps:
-  0 — Origem: 3 chips (Arquivo / URL / Iniciais)
+  0 — Origem: 2 chips (URL / Iniciais)
   1 — Configurar: conteúdo dinâmico por origem
-       - Arquivo: botão de seleção (placeholder; FilePicker real exige overlay)
        - URL: campo URL + preview circular ao vivo
        - Iniciais: campo iniciais (max 2 chars) + 6 swatches de cor
   2 — Confirmar: preview circular grande do avatar final
   3 — Sucesso
 
-State: source, file_path, url, initials, bg_color.
-`on_complete` recebe `{"source": str, "value": str}` — `value` é
-`initials` / `url` / `file_path` conforme `source`.
+State: source, url, initials, bg_color.
+`on_complete` recebe `{"source": str, "value": str}`, onde `source` é
+`"Iniciais"` ou `"URL"` e `value` é `initials` / `url` correspondente.
 
 `mock=True` inicializa com `PROFILE_AVATAR` (source="Iniciais", "AL",
 roxo `#7C6EF6`) e abre no step 2 (Confirmar).
@@ -30,7 +29,6 @@ from flet_wizards.core import (
     WizardMeta,
     WizardTheme,
     form_field,
-    ghost_button,
     primary_button,
     register,
 )
@@ -41,7 +39,7 @@ META = register(
         id="profile.avatar",
         name="Avatar",
         category="profile",
-        description="Wizard de configuração de avatar com 3 origens (arquivo, URL, iniciais).",
+        description="Wizard de configuração de avatar com 2 origens (iniciais ou URL).",
         steps=["Origem", "Configurar", "Confirmar"],
         platforms=[
             ft.PagePlatform.WINDOWS,
@@ -50,12 +48,11 @@ META = register(
             ft.PagePlatform.ANDROID,
             ft.PagePlatform.IOS,
         ],
-        on_complete_schema={"source": "str", "value": "str"},
+        on_complete_schema={"source": "'Iniciais'|'URL'", "value": "str"},
     )
 )
 
 SOURCE_OPTIONS: list[tuple[str, str]] = [
-    ("Arquivo", "📁"),
     ("URL", "🔗"),
     ("Iniciais", "✏️"),
 ]
@@ -78,7 +75,6 @@ class ProfileAvatarState(BaseWizardState):
     TOTAL_STEPS: ClassVar[int] = 3
 
     source: str = ""
-    file_path: str = ""
     url: str = ""
     initials: str = ""
     bg_color: str = ""
@@ -86,7 +82,6 @@ class ProfileAvatarState(BaseWizardState):
     def reset(self) -> None:
         super().reset()
         self.source = ""
-        self.file_path = ""
         self.url = ""
         self.initials = ""
         self.bg_color = ""
@@ -98,8 +93,6 @@ def _value_from_state(state: ProfileAvatarState) -> str:
         return state.initials
     if state.source == "URL":
         return state.url
-    if state.source == "Arquivo":
-        return state.file_path
     return ""
 
 
@@ -131,19 +124,6 @@ def _avatar_circle(state: ProfileAvatarState, size: int) -> ft.Control:
             clip_behavior=ft.ClipBehavior.ANTI_ALIAS,
             content=ft.Image(
                 src=state.url,
-                fit=ft.BoxFit.COVER,
-                width=size,
-                height=size,
-            ),
-        )
-    if state.source == "Arquivo" and state.file_path:
-        return ft.Container(
-            width=size,
-            height=size,
-            border_radius=radius,
-            clip_behavior=ft.ClipBehavior.ANTI_ALIAS,
-            content=ft.Image(
-                src=state.file_path,
                 fit=ft.BoxFit.COVER,
                 width=size,
                 height=size,
@@ -326,38 +306,6 @@ def _PanelURL(state: ProfileAvatarState) -> ft.Control:
 
 
 @ft.component
-def _PanelArquivo(state: ProfileAvatarState) -> ft.Control:
-    """Placeholder de seleção de arquivo — FilePicker real exige overlay."""
-
-    T = state.text()
-    S = state.sub()
-    B = state.border()
-
-    def stub_pick(_e):
-        state.file_path = "storage/temp/avatar_demo.png"
-
-    return ft.Column(
-        [
-            ft.Text(
-                "Selecione uma imagem do dispositivo.",
-                size=13,
-                color=S,
-            ),
-            ft.Container(height=18),
-            ghost_button("Escolher arquivo", stub_pick, T, B),
-            ft.Container(height=10),
-            ft.Text(
-                state.file_path or "Nenhum arquivo selecionado.",
-                size=12,
-                color=S,
-                italic=not bool(state.file_path),
-            ),
-        ],
-        spacing=0,
-    )
-
-
-@ft.component
 def StepConfigurar(state: ProfileAvatarState) -> ft.Control:
     """Conteúdo dinâmico baseado em `state.source`."""
 
@@ -368,8 +316,6 @@ def StepConfigurar(state: ProfileAvatarState) -> ft.Control:
         panel = _PanelIniciais(state)
     elif state.source == "URL":
         panel = _PanelURL(state)
-    elif state.source == "Arquivo":
-        panel = _PanelArquivo(state)
     else:
         panel = ft.Text(
             "Volte ao step anterior e selecione uma origem.",

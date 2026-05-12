@@ -2,15 +2,18 @@
 
 Define `WizardTheme` como dataclass imutável com a paleta completa exigida
 por todos os componentes (`primary`, `secondary`, `accent`, `bg`, `surface`,
-`card`, `panel`, `border`, `text`, `sub`).
+`card`, `panel`, `border`, `text`, `sub`) e um campo `mode` indicando se a
+paleta foi desenhada para light ou dark mode.
 
-Os built-ins (`SLATE`, `EMERALD`, `ROSE`, `AZURE`) são instâncias anexadas
-à própria classe e usam exatamente os valores hex do `docs/reference/wizard.py`.
-`THEMES_BY_NAME` expõe o mesmo conjunto indexado pelo nome capitalizado,
-útil para seletores de tema baseados em string.
+Built-ins (`SLATE`, `EMERALD`, `ROSE`, `AZURE`, `FOREST`, `CRIMSON`, `FROST`)
+são instâncias anexadas à própria classe. `THEMES_BY_NAME` expõe o mesmo
+conjunto indexado pelo nome capitalizado, útil para seletores baseados em
+string.
 """
 
 from dataclasses import dataclass
+
+import flet as ft
 
 
 @dataclass(frozen=True)
@@ -27,6 +30,7 @@ class WizardTheme:
     border: str
     text: str
     sub: str
+    mode: ft.ThemeMode = ft.ThemeMode.DARK
 
 
 WizardTheme.SLATE = WizardTheme(
@@ -81,12 +85,57 @@ WizardTheme.AZURE = WizardTheme(
     sub="#3C5070",
 )
 
+WizardTheme.FOREST = WizardTheme(
+    primary="#FFFDF5",
+    secondary="#D4EDDA",
+    accent="#4CAF50",
+    bg="#0A1F0C",
+    surface="#112214",
+    card="#162B19",
+    panel="#0D1A0F",
+    border="#1E3D22",
+    text="#FFFDF5",
+    sub="#A5C9A8",
+    mode=ft.ThemeMode.DARK,
+)
+
+WizardTheme.CRIMSON = WizardTheme(
+    primary="#DE1F26",
+    secondary="#FF4444",
+    accent="#FF6B6B",
+    bg="#0D0D0D",
+    surface="#141414",
+    card="#1A1A1A",
+    panel="#111111",
+    border="#2A2A2A",
+    text="#F5F5F5",
+    sub="#999999",
+    mode=ft.ThemeMode.DARK,
+)
+
+WizardTheme.FROST = WizardTheme(
+    primary="#0052FF",
+    secondary="#3B82F6",
+    accent="#60A5FA",
+    bg="#F8FAFC",
+    surface="#FFFFFF",
+    card="#F1F5F9",
+    panel="#E2E8F0",
+    border="#CBD5E1",
+    text="#0F172A",
+    sub="#64748B",
+    mode=ft.ThemeMode.LIGHT,
+)
+
 
 THEMES_BY_NAME: dict[str, WizardTheme] = {
     "Slate": WizardTheme.SLATE,
     "Emerald": WizardTheme.EMERALD,
     "Rose": WizardTheme.ROSE,
     "Azure": WizardTheme.AZURE,
+    "Forest": WizardTheme.FOREST,
+    "Crimson": WizardTheme.CRIMSON,
+    "Frost": WizardTheme.FROST,
 }
 
 
