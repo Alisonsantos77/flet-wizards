@@ -3,6 +3,23 @@
 Todas as mudanças relevantes deste projeto são documentadas aqui.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e o versionamento usa [SemVer](https://semver.org/lang/pt-BR/).
 
+## [0.2.3] — 2026-05-14
+
+Release de documentação. Sem mudanças funcionais — alinha README, `docs/` e guia de contribuição ao estado real entregue em 0.2.2.
+
+### Adicionado
+
+- **`LICENSE`** na raiz do repositório (MIT, 2026, Alison Santos). Incluído em `[tool.hatch.build.targets.sdist].include` — sdist publicado no PyPI agora carrega a licença.
+- **`CONTRIBUTING.md`** separado do README. Concentra setup local, estrutura do projeto, passo a passo de 10 itens para adicionar template novo, convenções de código, padrão híbrido de estado, diferenças mobile-first e fluxo de release.
+- **`docs/themes.md`** — documentação pública do sistema de tema duplo dark/light: tabela dos 7 pares, tokens de cor, uso direto (`WizardTheme.X` / `WizardTheme.X_LIGHT`), `resolve_theme(theme, mode)` com fallbacks, convenções de bg em temas saturados, paletas customizadas.
+- **`docs/auth/two_factor.md`**, **`docs/onboarding/walkthrough.md`**, **`docs/survey/feedback.md`** — docs completas dos 3 wizards mobile-first introduzidos em 0.2.0 (descrição, quando usar, steps, campos, parâmetros, plataformas, limitações conhecidas, exemplo, mock data).
+
+### Alterado
+
+- **`README.md`** reescrito para refletir 0.2.x: tabela com os 9 wizards atuais (incluindo `AuthTwoFactorWizard`, `OnboardingWalkthroughWizard`, `SurveyFeedbackWizard`), seção dedicada a Temas com tabela dos 7 pares e exemplo de `resolve_theme`, seção "Preview local de desenvolvimento" explicitando que `src/gallery/` não vai no wheel, seção "Demo interativa" linkando o repo separado de showcase. Seção "Contribuindo" reduzida a uma linha apontando para `CONTRIBUTING.md`. Badge MIT passa a apontar para `./LICENSE`.
+- **`docs/profile/avatar.md`** reescrito — remove toda menção a "Arquivo"/`_PanelArquivo`/`state.file_path` (origem removida em 0.2.1). Documenta 2 origens (URL e Iniciais), corrige mock data (`bg_color=""` com fallback em `state.accent()`), adiciona seção de limitações conhecidas.
+- **`docs/profile/setup.md`** — tabela do step Preferências atualizada para refletir os 4 swatches reais (`Slate`, `Rose`, `Amber`, `Frost`). Nota explicando que os demais temas (`Emerald`, `Azure`, `Crimson`) continuam acessíveis via `WizardTheme.X` direto.
+
 ## [0.2.2] — 2026-05-14
 
 Release focado em sistema de tema duplo dark/light, retrabalho de paletas e melhorias de legibilidade de UI.

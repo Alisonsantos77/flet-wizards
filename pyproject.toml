@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "flet-wizards"
-version = "0.2.2"
+version = "0.2.3"
 description = "Multi-step wizard templates for Flet apps — auth, profile, and gallery showcase"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -52,6 +52,7 @@ include = [
     "src/flet_wizards",
     "README.md",
     "CHANGELOG.md",
+    "LICENSE",
     "pyproject.toml",
 ]
 exclude = [

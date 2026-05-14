@@ -1,6 +1,6 @@
 # ProfileAvatarWizard
 
-Configuração de avatar em **3 steps de dados + tela de sucesso**, com 3 origens (arquivo, URL, iniciais) e preview ao vivo.
+Configuração de avatar em **3 steps de dados + tela de sucesso**, com 2 origens (URL e Iniciais) e preview ao vivo.
 
 - **ID:** `profile.avatar`
 - **Categoria:** `profile`
@@ -11,13 +11,22 @@ Configuração de avatar em **3 steps de dados + tela de sucesso**, com 3 origen
 
 ## Descrição
 
-Permite ao usuário escolher entre 3 origens de avatar:
+Permite ao usuário escolher entre 2 origens de avatar:
 
-- **Arquivo** — botão de seleção (placeholder; integração com `ft.FilePicker` real exige overlay no `page` e fica a cargo do consumidor).
 - **URL** — campo URL + preview circular ao vivo via `ft.Image(src=url, fit=ft.BoxFit.COVER)`.
 - **Iniciais** — campo iniciais (max 2 chars, uppercase) + 6 swatches de cor de fundo.
 
 A tela de configuração (step 1) é **dinâmica**: o conteúdo muda conforme `state.source`. O step 2 mostra um preview circular grande (128px) do avatar final.
+
+A origem "Arquivo" foi removida em 0.2.1 — para upload real, monte um `ft.FilePicker` no overlay do `page` e use o callback para gerar uma URL (data URL ou hospedada) que é então passada como `state.url`.
+
+---
+
+## Quando usar
+
+- Onboarding inicial pedindo ao usuário para configurar foto de perfil.
+- Tela de edição de avatar dentro de configurações.
+- Fallback quando o usuário ainda não fez upload real (gera avatar de iniciais).
 
 ---
 
@@ -25,8 +34,8 @@ A tela de configuração (step 1) é **dinâmica**: o conteúdo muda conforme `s
 
 | Índice | Label | Conteúdo |
 |---|---|---|
-| 0 | **Origem** | 3 chips com ícone: 📁 Arquivo, 🔗 URL, ✏️ Iniciais. |
-| 1 | **Configurar** | Painel dinâmico baseado em `state.source` (`_PanelArquivo`, `_PanelURL` ou `_PanelIniciais`). |
+| 0 | **Origem** | 2 chips com ícone: 🔗 URL, ✏️ Iniciais. |
+| 1 | **Configurar** | Painel dinâmico baseado em `state.source` (`_PanelURL` ou `_PanelIniciais`). |
 | 2 | **Confirmar** | Preview circular (128px) + label da origem. |
 | 3 | **Sucesso** | "Avatar salvo." + botão "Voltar ao início". |
 
@@ -38,7 +47,7 @@ A tela de configuração (step 1) é **dinâmica**: o conteúdo muda conforme `s
 
 | Campo | Tipo | UI |
 |---|---|---|
-| `source` | `str` | 3 `GestureDetector` chips: `"Arquivo"`, `"URL"`, `"Iniciais"` |
+| `source` | `str` | 2 `GestureDetector` chips: `"URL"`, `"Iniciais"` |
 
 ### Step 1 — Configurar
 
@@ -59,26 +68,42 @@ Renderização baseada em `state.source`:
 
 Mais um preview circular (96px) embaixo, atualizado ao vivo.
 
-#### `source == "Arquivo"` → `_PanelArquivo`
-
-Botão ghost "Escolher arquivo" (stub que seta `state.file_path = "storage/temp/avatar_demo.png"`). Para o file picker real, monte um `ft.FilePicker` no overlay do `page` e atualize `state.file_path` no callback de seleção.
-
 #### `source` vazio
 
-Renderiza "Volte ao step anterior e selecione uma origem." (não deveria acontecer no fluxo normal porque o usuário precisa passar pelo step 0).
+Renderiza "Volte ao step anterior e selecione uma origem." (não deveria acontecer no fluxo normal — o usuário precisa passar pelo step 0).
 
 ### Step 2 — Confirmar
 
 Preview circular (128px) via `_avatar_circle(state, 128)`:
 
-- Iniciais → círculo bgcolor `bg_color`, texto branco com as iniciais.
-- URL → `ft.Image(src=url, fit=BoxFit.COVER)` com `clip_behavior=ANTI_ALIAS`.
-- Arquivo → mesmo que URL, com `src=file_path`.
+- **Iniciais** → círculo bgcolor `state.bg_color or state.accent()`, texto branco com as iniciais. Quando `bg_color` está vazio, o círculo herda o `accent` do tema ativo.
+- **URL** → `ft.Image(src=url, fit=BoxFit.COVER)` com `clip_behavior=ANTI_ALIAS`.
 - Sem source/value → círculo cinza com "?".
 
 ### Step 3 — Sucesso
 
 Check (72px) + "Avatar salvo." + botão "Voltar ao início" → `state.reset()`.
+
+---
+
+## Campos coletados
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `source` | `str` | `"URL"` ou `"Iniciais"`. |
+| `url` | `str` | Preenchido apenas se `source == "URL"`. |
+| `initials` | `str` | Até 2 caracteres, uppercase. Preenchido apenas se `source == "Iniciais"`. |
+| `bg_color` | `str` | Hex da cor de fundo (apenas para iniciais). Pode ficar vazio — fallback para `state.accent()`. |
+
+---
+
+## Parâmetros
+
+| Parâmetro | Tipo | Default | Descrição |
+|---|---|---|---|
+| `theme` | `WizardTheme` | `WizardTheme.SLATE` | Paleta visual. |
+| `on_complete` | `Callable[[dict], Any] \| None` | `None` | Callback recebendo `{"source": str, "value": str}`. |
+| `mock` | `bool` | `False` | Preview no gallery — inicializa com `PROFILE_AVATAR`. |
 
 ---
 
@@ -108,9 +133,16 @@ Check (72px) + "Avatar salvo." + botão "Voltar ao início" → `state.reset()`.
 |---|---|
 | `"Iniciais"` | `state.initials` |
 | `"URL"` | `state.url` |
-| `"Arquivo"` | `state.file_path` |
 
-Schema declarado em `META.on_complete_schema = {"source": "str", "value": "str"}`.
+Schema declarado em `META.on_complete_schema = {"source": "'Iniciais'|'URL'", "value": "str"}`.
+
+---
+
+## Limitações conhecidas
+
+- **Sem upload real de arquivo.** A origem "Arquivo" foi removida em 0.2.1. Para upload real, integre um `ft.FilePicker` externamente e passe a URL/path resultante via outro fluxo.
+- **Sem validação de URL.** Qualquer string é aceita no campo URL — `ft.Image` simplesmente falha silenciosamente se a URL não resolver.
+- **Sem validação de tamanho de iniciais.** O slice limita a 2 chars, mas 1 char (ou caractere especial) é aceito sem aviso.
 
 ---
 
@@ -124,10 +156,13 @@ from flet_wizards import ProfileAvatarWizard, WizardTheme
 @ft.component
 def App() -> ft.Control:
     async def handle_avatar(data: dict) -> None:
-        # data == {"source": "Iniciais"|"URL"|"Arquivo", "value": "..."}
+        # data == {"source": "Iniciais"|"URL", "value": "..."}
         if data["source"] == "URL":
             url = data["value"]
-            ...
+            # persistir url no perfil...
+        else:
+            initials = data["value"]
+            # gerar avatar de iniciais server-side ou armazenar a string...
 
     return ProfileAvatarWizard(
         theme=WizardTheme.ROSE,
@@ -154,8 +189,8 @@ ft.run(main)
 PROFILE_AVATAR = {
     "source": "Iniciais",
     "initials": "AL",
-    "bg_color": "#7C6EF6",
+    "bg_color": "",
 }
 ```
 
-Em modo mock o wizard abre no step 2 (Confirmar) já mostrando o preview circular roxo com "AL". Os campos `url` e `file_path` ficam vazios — só "Iniciais" é demonstrado no preview.
+Em modo mock o wizard abre no step 2 (Confirmar) com preview circular usando `state.accent()` do tema ativo (porque `bg_color=""`) e iniciais "AL". Trocar o tema externamente repinta o círculo automaticamente.

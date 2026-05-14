@@ -48,7 +48,7 @@ Diferença vs auth wizards: aqui o **`state.theme_key` é a fonte de verdade** d
 
 | Campo | Tipo | UI |
 |---|---|---|
-| `theme_key` | `str` | 4 swatches: `Slate`, `Emerald`, `Rose`, `Azure` (preview com 3 dots: primary/secondary/accent) |
+| `theme_key` | `str` | 4 swatches: `Slate`, `Rose`, `Amber`, `Frost` (preview com 3 dots: primary/secondary/accent) |
 | `language` | `str` | `ft.Dropdown` com `on_select` (não `on_change` no Flet 0.85+) |
 
 Idiomas disponíveis: `pt-BR`, `en-US`, `es-ES`, `fr-FR`.
@@ -90,7 +90,7 @@ Check (72px) + "Perfil pronto, {primeiro nome}." + botão "Recomeçar" → `stat
     "username": str,
     "bio": str,
     "interests": list,   # list[str]
-    "theme": str,        # chave: "Slate" | "Emerald" | "Rose" | "Azure"
+    "theme": str,        # chave: "Slate" | "Rose" | "Amber" | "Frost" (ou outro registrado em THEMES_BY_NAME)
     "language": str,     # ex.: "pt-BR"
 }
 ```
@@ -146,3 +146,5 @@ PROFILE_SETUP = {
 ```
 
 Em modo mock o wizard abre no step 2 (Preferências) com Slate selecionado e idioma `pt-BR`. Trocar de swatch repinta o wizard inteiro ao vivo.
+
+> O seletor expõe 4 swatches (`Slate`, `Rose`, `Amber`, `Frost`) por padrão para evitar fadiga visual. Os outros temas registrados em `THEMES_BY_NAME` (Emerald, Azure, Crimson) continuam disponíveis via `WizardTheme.X` direto — apenas não aparecem no seletor enxuto.
