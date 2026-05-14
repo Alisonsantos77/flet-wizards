@@ -3,15 +3,41 @@
 Todas as mudanças relevantes deste projeto são documentadas aqui.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e o versionamento usa [SemVer](https://semver.org/lang/pt-BR/).
 
+## [0.2.2] — 2026-05-14
+
+Release focado em sistema de tema duplo dark/light, retrabalho de paletas e melhorias de legibilidade de UI.
+
+### Adicionado
+
+- **Sistema de tema duplo dark/light** — `WizardTheme` ganhou os campos `mode: ft.ThemeMode` e `pair_name: str`. Cada combinação existe em 2 variantes (14 paletas no total): `SLATE`/`SLATE_LIGHT`, `EMERALD`/`EMERALD_LIGHT`, `ROSE`/`ROSE_LIGHT`, `AZURE`/`AZURE_LIGHT`, `AMBER`/`AMBER_LIGHT`, `CRIMSON`/`CRIMSON_LIGHT`, `FROST_DARK`/`FROST`. Dict `THEME_PAIRS` mapeia `pair_name → (dark, light)`.
+- **`resolve_theme(theme, mode)`** — função pública em `flet_wizards.core` que devolve a variante correta para um `ft.ThemeMode`. Em `SYSTEM`, lê `ft.context.page.platform_brightness` e cai em dark como fallback fora de contexto reativo.
+- **Toggle de ThemeMode no preview** — barra com 3 estados (SYSTEM / LIGHT / DARK) abaixo do seletor de temas. Filtra os swatches por modo e converte automaticamente o tema ativo para a variante oposta do mesmo par ao trocar de modo.
+
+### Alterado
+
+- **Rename `WizardTheme.FOREST` → `WizardTheme.AMBER`** (`FOREST_LIGHT` → `AMBER_LIGHT`, `pair_name` `"forest"` → `"amber"`). O nome reflete melhor a identidade da cor (`#F59E0B`).
+- **Paletas reworked** — `EMERALD`, `ROSE`, `AZURE` e `AMBER` ganharam tokens novos com melhor balanço entre `primary`, `accent` e `panel`. `SLATE` e `CRIMSON` mantêm a identidade mas com ajustes finos.
+- **Bg neutro escuro em temas dark de alta saturação** — `ROSE` e `AMBER` dark passam a usar `bg`/`surface`/`card` neutros (`#0D0D0D`/`#161616`/`#1C1C1C`) para que a identidade da cor fique no `primary`/`accent` sem contaminar o fundo. Identidades visualmente distintas mesmo entre temas com a mesma família de bg.
+- **Light themes com fundo branco neutro** — todas as 7 variantes light agora têm `bg=#FFFFFF`, `surface=#FFFFFF`, `card=#FAFAFA`. Tint da cor identidade é preservado apenas em `panel` (sidebar). Border padronizado em `#E2E8F0` neutro.
+- **`primary_button` sempre com texto branco** — heurística por luminância removida. `text_color` explícito ainda sobrescreve. A heurística produzia regressões em ambos os extremos do espectro (Amber dark `#F59E0B` ganhava texto escuro, Amber light `#D97706` também). Branco em todos os botões CTA segue a convenção de libs maduras.
+- **Sidebar dos wizards desktop — legibilidade independente do tema** — label e hint do step ativo agora usam `state.text()`; demais steps (inativo ou completado) usam `state.sub()`. `state.primary()` permanece apenas em bgcolor do círculo do step ativo, indicator vertical e barra de progresso. Garante leitura mesmo em temas com primary muito saturado (Amber, Rose).
+- **`ProfileSetupWizard` step Preferências** — seletor de tema enxuto com 4 swatches (Slate, Rose, Amber, Frost) em vez de exibir todos os 7 do registro.
+- **`AuthRegisterWizard` step Confirmar** — badge do role substituído por texto inline `"Nome (Role)"` em `ft.Text` simples. Sem container bordado.
+- **`ProfileAvatarWizard`** — `bg_color` do mock vazio por default; círculo do avatar herda `state.accent()` quando o usuário ainda não escolheu cor.
+
+### Documentação
+
+- Docstrings de `core/theme.py` atualizadas para descrever pares dark/light, convenção de bg neutro e fallback de `resolve_theme` em SYSTEM.
+
 ## [0.2.1] — 2026-05-13
 
-Release de bugfixes focado em contraste, foco assíncrono nos campos de OTP e ajustes da paleta FOREST.
+Release de bugfixes focado em contraste, foco assíncrono nos campos de OTP e ajustes da paleta âmbar.
 
 ### Corrigido
 
 - **`AuthTwoFactorWizard`** — guarda `try/except` em torno do `field.focus()` (chamada assíncrona pode lançar `AssertionError` se o controle ainda não estiver no tree); `on_submit` agora avança o foco para o próximo dígito após digitação. Auto-advance via `on_change` foi removido temporariamente até revisão.
-- **`primary_button`** — contraste de texto recalculado sobre `theme.primary` para garantir leitura em todos os modos (resolveu botões "invisíveis" na paleta FOREST).
-- **Paleta `WizardTheme.FOREST`** — `primary` retrabalhado para tom verde mais saturado com contraste adequado contra `bg` e `surface`; `accent` e `panel` rebalanceados.
+- **`primary_button`** — contraste de texto recalculado sobre `theme.primary` para garantir leitura em todos os modos (resolveu botões "invisíveis" na paleta âmbar).
+- **Paleta `WizardTheme.AMBER`** — `primary` retrabalhado para tom âmbar saturado com contraste adequado contra `bg` e `surface`; `accent` e `panel` rebalanceados.
 - **`ProfileAvatarWizard`** — cor do mock do avatar agora deriva de `theme.surface` em vez de hex fixo.
 - **Seletor de tema** — ring do tema ativo agora respeita `theme.primary` corrente.
 - **`badge`** em mock data — cores derivadas do tema (não mais hex hardcoded).

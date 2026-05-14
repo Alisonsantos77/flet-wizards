@@ -447,7 +447,12 @@ def StepSuccess(state: SurveyFeedbackState) -> ft.Control:
             ft.Container(height=14),
             ft.Text(summary, size=12, color=S, weight=ft.FontWeight.W_500),
             ft.Container(height=28),
-            primary_button("Enviar outro", lambda _: state.reset(), P),
+            primary_button(
+                "Enviar outro",
+                lambda _: state.reset(),
+                P,
+                mode=state.theme.mode,
+            ),
             ft.Container(expand=1),
         ],
         spacing=0,
@@ -553,6 +558,7 @@ def SurveyFeedbackWizard(
         P,
         loading=state.loading and is_last,
         loading_label="Enviando...",
+        mode=state.theme.mode,
     )
 
     back = (

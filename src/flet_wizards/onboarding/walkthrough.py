@@ -209,7 +209,12 @@ def _SuccessView(state: OnboardingWalkthroughState) -> ft.Control:
                 ),
             ),
             ft.Container(height=32),
-            primary_button("Refazer tour", lambda _: state.reset(), P),
+            primary_button(
+                "Refazer tour",
+                lambda _: state.reset(),
+                P,
+                mode=state.theme.mode,
+            ),
             ft.Container(expand=1),
         ],
         spacing=0,
@@ -295,6 +300,7 @@ def OnboardingWalkthroughWizard(
                 P,
                 loading=state.loading,
                 loading_label="Preparando...",
+                mode=state.theme.mode,
             ),
             padding=ft.Padding.symmetric(horizontal=8, vertical=0),
         )

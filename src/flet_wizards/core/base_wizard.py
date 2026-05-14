@@ -96,10 +96,10 @@ def Sidebar(
                 ft.Text(
                     label,
                     size=13,
-                    color=T if active else (state.secondary() if done else S),
+                    color=T if active else S,
                     weight=ft.FontWeight.W_600 if active else ft.FontWeight.W_400,
                 ),
-                ft.Text(hint, size=11, color=S),
+                ft.Text(hint, size=11, color=T if active else S),
             ],
             spacing=1,
         )
@@ -240,6 +240,7 @@ def NavBar(
         P,
         loading=state.loading and is_last,
         loading_label=loading_label,
+        mode=state.theme.mode,
     )
 
     return ft.Row(

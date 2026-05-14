@@ -13,7 +13,13 @@ from .registry import (
     register,
 )
 from .snack import SnackHost, show_error, show_info, show_success
-from .theme import DEFAULT_THEME, THEMES_BY_NAME, WizardTheme
+from .theme import (
+    DEFAULT_THEME,
+    THEME_PAIRS,
+    THEMES_BY_NAME,
+    WizardTheme,
+    resolve_theme,
+)
 
 __all__ = [
     "BaseWizardState",
@@ -22,6 +28,7 @@ __all__ = [
     "PlatformGuard",
     "Sidebar",
     "SnackHost",
+    "THEME_PAIRS",
     "THEMES_BY_NAME",
     "WizardFrame",
     "WizardMeta",
@@ -35,6 +42,7 @@ __all__ = [
     "ghost_button",
     "primary_button",
     "register",
+    "resolve_theme",
     "show_error",
     "show_info",
     "show_success",

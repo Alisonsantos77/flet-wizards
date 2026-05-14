@@ -13,7 +13,8 @@ State: source, url, initials, bg_color.
 `"Iniciais"` ou `"URL"` e `value` é `initials` / `url` correspondente.
 
 `mock=True` inicializa com `PROFILE_AVATAR` (source="Iniciais", "AL",
-roxo `#7C6EF6`) e abre no step 2 (Confirmar).
+sem `bg_color` — círculo herda `state.accent()` do tema ativo) e abre
+no step 2 (Confirmar).
 """
 
 import inspect
@@ -97,8 +98,13 @@ def _value_from_state(state: ProfileAvatarState) -> str:
 
 
 def _avatar_circle(state: ProfileAvatarState, size: int) -> ft.Control:
-    """Render circular do avatar conforme a origem corrente."""
-    P = state.primary()
+    """Render circular do avatar conforme a origem corrente.
+
+    Quando `state.bg_color` está vazio (mock inicial ou usuário ainda não
+    escolheu cor), o fundo do círculo cai em `state.accent()` para que o
+    avatar combine com o tema ativo. Quando o usuário pica um swatch dos
+    `AVATAR_COLORS`, esse valor passa a vencer o fallback.
+    """
     B = state.border()
     radius = size // 2
 
@@ -107,7 +113,7 @@ def _avatar_circle(state: ProfileAvatarState, size: int) -> ft.Control:
             width=size,
             height=size,
             border_radius=radius,
-            bgcolor=state.bg_color or P,
+            bgcolor=state.bg_color or state.accent(),
             alignment=ft.Alignment(0, 0),
             content=ft.Text(
                 (state.initials or "?").upper(),
@@ -427,7 +433,12 @@ def StepSuccess(state: ProfileAvatarState) -> ft.Control:
                         text_align=ft.TextAlign.CENTER,
                     ),
                     ft.Container(height=28),
-                    primary_button("Voltar ao início", lambda _: state.reset(), P),
+                    primary_button(
+                        "Voltar ao início",
+                        lambda _: state.reset(),
+                        P,
+                        mode=state.theme.mode,
+                    ),
                 ],
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 spacing=0,
@@ -452,7 +463,8 @@ def ProfileAvatarWizard(
     """Wizard público de avatar — 3 steps + sucesso.
 
     `mock=True` inicializa com `PROFILE_AVATAR` (source='Iniciais', 'AL',
-    roxo) e abre no step 2 (Confirmar) já mostrando o preview circular.
+    sem cor explícita — círculo usa `state.accent()` do tema) e abre no
+    step 2 (Confirmar) já mostrando o preview circular.
     """
 
     if mock:

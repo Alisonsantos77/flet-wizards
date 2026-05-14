@@ -392,7 +392,12 @@ def StepSuccess(state: ProfileEditState) -> ft.Control:
                         text_align=ft.TextAlign.CENTER,
                     ),
                     ft.Container(height=28),
-                    primary_button("Voltar ao início", lambda _: state.reset(), P),
+                    primary_button(
+                        "Voltar ao início",
+                        lambda _: state.reset(),
+                        P,
+                        mode=state.theme.mode,
+                    ),
                 ],
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 spacing=0,

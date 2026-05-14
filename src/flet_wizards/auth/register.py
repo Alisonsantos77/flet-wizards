@@ -248,14 +248,13 @@ def StepPerfil(state: AuthRegisterState) -> ft.Control:
 
 @ft.component
 def StepConfirmar(state: AuthRegisterState) -> ft.Control:
-    """Card review com avatar, nome, papel e e-mail."""
+    """Card review com avatar, nome (com papel inline) e e-mail."""
 
     P = state.primary()
     T = state.text()
     S = state.sub()
     B = state.border()
     SX = state.surface()
-    AC = state.accent()
 
     avatar = ft.Container(
         width=64,
@@ -271,16 +270,9 @@ def StepConfirmar(state: AuthRegisterState) -> ft.Control:
         ),
     )
 
-    role_badge = ft.Container(
-        content=ft.Text(
-            state.role or "—",
-            size=10,
-            color=AC,
-            weight=ft.FontWeight.W_600,
-        ),
-        border=ft.Border.all(1, AC + "60"),
-        border_radius=20,
-        padding=ft.Padding.symmetric(horizontal=10, vertical=4),
+    display_name = state.name or "Sem nome"
+    name_line = (
+        f"{display_name} ({state.role})" if state.role else display_name
     )
 
     return ft.Column(
@@ -309,18 +301,11 @@ def StepConfirmar(state: AuthRegisterState) -> ft.Control:
                         ft.Container(width=18),
                         ft.Column(
                             [
-                                ft.Row(
-                                    [
-                                        ft.Text(
-                                            state.name or "Sem nome",
-                                            size=15,
-                                            color=T,
-                                            weight=ft.FontWeight.BOLD,
-                                        ),
-                                        ft.Container(width=10),
-                                        role_badge,
-                                    ],
-                                    vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                                ft.Text(
+                                    name_line,
+                                    size=16,
+                                    weight=ft.FontWeight.BOLD,
+                                    color=T,
                                 ),
                                 ft.Container(height=4),
                                 ft.Text(
@@ -385,7 +370,12 @@ def StepSuccess(state: AuthRegisterState) -> ft.Control:
                         text_align=ft.TextAlign.CENTER,
                     ),
                     ft.Container(height=28),
-                    primary_button("Voltar ao início", lambda _: state.reset(), P),
+                    primary_button(
+                        "Voltar ao início",
+                        lambda _: state.reset(),
+                        P,
+                        mode=state.theme.mode,
+                    ),
                 ],
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 spacing=0,

@@ -266,7 +266,7 @@ wheels = [
 
 [[package]]
 name = "flet-wizards"
-version = "0.2.1"
+version = "0.2.2"
 source = { editable = "." }
 dependencies = [
     { name = "flet" },

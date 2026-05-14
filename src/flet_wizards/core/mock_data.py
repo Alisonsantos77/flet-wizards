@@ -52,7 +52,7 @@ PROFILE_EDIT: dict = {
 PROFILE_AVATAR: dict = {
     "source": "Iniciais",
     "initials": "AL",
-    "bg_color": "#4CAF50",
+    "bg_color": "",
 }
 
 SURVEY_FEEDBACK: dict = {

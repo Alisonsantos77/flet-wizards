@@ -70,6 +70,13 @@ LANGUAGES: list[tuple[str, str]] = [
     ("fr-FR", "Français"),
 ]
 
+SETUP_THEMES: list[tuple[str, WizardTheme]] = [
+    ("Slate", WizardTheme.SLATE),
+    ("Rose", WizardTheme.ROSE),
+    ("Amber", WizardTheme.AMBER),
+    ("Frost", WizardTheme.FROST),
+]
+
 
 def _key_for_theme(t: WizardTheme) -> str:
     """Mapeia uma instância de WizardTheme de volta para sua chave."""
@@ -262,20 +269,18 @@ def StepPreferencias(state: ProfileSetupState) -> ft.Control:
 
     lang_v, set_lang = ft.use_state(state.language)
 
-    def pick_theme(name: str):
-        new_theme = THEMES_BY_NAME[name]
+    def pick_theme(name: str, theme: WizardTheme):
         state.theme_key = name
-        state.theme = new_theme
+        state.theme = theme
 
     def on_lang(e):
         set_lang(e.control.value)
         state.language = e.control.value
 
-    def theme_swatch(name: str) -> ft.GestureDetector:
-        theme = THEMES_BY_NAME[name]
+    def theme_swatch(name: str, theme: WizardTheme) -> ft.GestureDetector:
         sel = state.theme_key == name
         return ft.GestureDetector(
-            on_tap=lambda _e, n=name: pick_theme(n),
+            on_tap=lambda _e, n=name, t=theme: pick_theme(n, t),
             content=ft.Container(
                 content=ft.Column(
                     [
@@ -356,7 +361,7 @@ def StepPreferencias(state: ProfileSetupState) -> ft.Control:
             ),
             ft.Container(height=10),
             ft.Row(
-                [theme_swatch(name) for name in THEMES_BY_NAME.keys()],
+                [theme_swatch(name, theme) for name, theme in SETUP_THEMES],
                 spacing=10,
             ),
             ft.Container(height=22),
@@ -431,7 +436,12 @@ def StepSuccess(state: ProfileSetupState) -> ft.Control:
                         text_align=ft.TextAlign.CENTER,
                     ),
                     ft.Container(height=28),
-                    primary_button("Recomeçar", lambda _: state.reset(), P),
+                    primary_button(
+                        "Recomeçar",
+                        lambda _: state.reset(),
+                        P,
+                        mode=state.theme.mode,
+                    ),
                 ],
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 spacing=0,

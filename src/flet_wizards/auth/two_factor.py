@@ -263,7 +263,12 @@ def StepSuccess(state: AuthTwoFactorState) -> ft.Control:
                 ),
             ),
             ft.Container(height=32),
-            primary_button("Voltar ao início", lambda _: state.reset(), P),
+            primary_button(
+                "Voltar ao início",
+                lambda _: state.reset(),
+                P,
+                mode=state.theme.mode,
+            ),
             ft.Container(expand=1),
         ],
         spacing=0,
@@ -345,6 +350,7 @@ def AuthTwoFactorWizard(
             P,
             loading=state.loading,
             loading_label="Verificando...",
+            mode=state.theme.mode,
         )
         if not is_done
         else ft.Container(width=0, height=0)

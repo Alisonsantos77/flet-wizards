@@ -54,15 +54,26 @@ def primary_button(
     loading: bool = False,
     loading_label: str = "Carregando...",
     text_color: str | None = None,
+    mode: ft.ThemeMode = ft.ThemeMode.DARK,
 ) -> ft.GestureDetector:
     """Botão primário com estado opcional de loading (ProgressRing + label).
 
-    `text_color` resolve automaticamente para um valor contrastante quando
-    `None`: se `color` for claro (luminância > 0.5), o texto vira escuro
-    (`#0F172A`); caso contrário, branco. Callers podem passar `text_color`
-    explicitamente para casar com o `bg` exato do tema.
+    Cor do texto: `text_color` explícito sempre vence. Caso contrário, usa
+    `#FFFFFF` em qualquer modo. A heurística por luminância foi removida
+    porque produzia regressões nos extremos do espectro de paletas:
+
+    - Em DARK, primary saturado tipo `#F59E0B` (lum > 0.5) ganhava texto
+      escuro praticamente invisível.
+    - Em LIGHT, primary médio tipo `#D97706` (lum ~0.53) também caía em
+      texto escuro com contraste WCAG abaixo do mínimo, enquanto `#6366F1`
+      (lum ~0.46) ficava em texto branco — comportamento descontínuo.
+
+    Branco em todos os botões CTA é a convenção dos botões primary das
+    libs maduras (Material/Tailwind/Carbon) e elimina o risco de discreto
+    desalinhamento entre paletas. O parâmetro `mode` é mantido na
+    assinatura para back-compat dos call sites, mas hoje é informacional.
     """
-    fg = text_color if text_color is not None else ("#0F172A" if _is_light(color) else "#FFFFFF")
+    fg = text_color if text_color is not None else "#FFFFFF"
     content = (
         ft.Row(
             [
