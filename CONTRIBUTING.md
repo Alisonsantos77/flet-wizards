@@ -1,10 +1,12 @@
-# Contribuindo com flet-wizards
+# Contributing to flet-wizards
 
-> Para usar a lib, veja o [README](README.md). Este arquivo é para quem quer contribuir com novos templates ou melhorias.
+🌐 [Português](CONTRIBUTING.pt-BR.md) | **English**
+
+> To use the library, see the [README](README.md). This file is for anyone contributing new templates or improvements.
 
 ---
 
-## Setup local
+## Local setup
 
 ```powershell
 git clone https://github.com/Alisonsantos77/flet-wizards
@@ -13,7 +15,7 @@ uv sync
 uv run flet run
 ```
 
-`uv run flet run` sobe o preview local com todos os wizards. Para inspecionar um wizard isolado:
+`uv run flet run` boots the local preview with every wizard. To inspect a wizard in isolation:
 
 ```bash
 uv run python preview/run.py
@@ -21,40 +23,40 @@ uv run python preview/run.py
 
 ---
 
-## Estrutura do projeto
+## Project layout
 
 ```
 flet-wizards/
 ├── src/
-│   ├── flet_wizards/        ← pacote publicado no PyPI
-│   │   ├── __init__.py      ← API pública (re-exports) + __version__
+│   ├── flet_wizards/        ← package published to PyPI
+│   │   ├── __init__.py      ← public API (re-exports) + __version__
 │   │   ├── auth/            ← login, register, recovery, two_factor
 │   │   ├── profile/         ← setup, edit, avatar
 │   │   ├── onboarding/      ← walkthrough (mobile)
 │   │   ├── survey/          ← feedback (mobile)
 │   │   └── core/            ← state, frame, components, theme, registry, snack
-│   ├── gallery/             ← preview de dev, fora do wheel
-│   └── main.py              ← entrypoint do flet run, fora do wheel
-├── docs/                    ← documentação por wizard (escrita manualmente)
-├── preview/                 ← script alternativo de preview, fora do wheel
+│   ├── gallery/             ← dev preview, not shipped in the wheel
+│   └── main.py              ← flet run entrypoint, not shipped in the wheel
+├── docs/                    ← per-wizard documentation (written by hand)
+├── preview/                 ← alternative preview script, not in the wheel
 ├── pyproject.toml
 ├── README.md
 ├── CHANGELOG.md
 ├── LICENSE
-└── CONTRIBUTING.md          ← este arquivo
+└── CONTRIBUTING.md          ← this file
 ```
 
-Apenas `src/flet_wizards/` vai no wheel publicado no PyPI. `src/gallery/`, `src/main.py`, `preview/`, `docs/` e `testers/` ficam fora.
+Only `src/flet_wizards/` is included in the wheel published to PyPI. `src/gallery/`, `src/main.py`, `preview/`, `docs/` and `testers/` are excluded.
 
 ---
 
-## Adicionar um novo template
+## Adding a new template
 
-### 1. Criar o módulo
+### 1. Create the module
 
-`src/flet_wizards/<categoria>/<nome>.py`. Categorias existentes: `auth`, `profile`, `onboarding`, `survey`. Categorias novas podem ser criadas livremente.
+`src/flet_wizards/<category>/<name>.py`. Existing categories: `auth`, `profile`, `onboarding`, `survey`. New categories can be added freely.
 
-### 2. Declarar o `WizardMeta` no topo
+### 2. Declare `WizardMeta` at the top
 
 ```python
 import flet as ft
@@ -62,10 +64,10 @@ from flet_wizards.core import WizardMeta, register
 
 META = register(
     WizardMeta(
-        id="categoria.nome",
-        name="Nome do Template",
-        category="categoria",
-        description="Descrição curta.",
+        id="category.name",
+        name="Template Name",
+        category="category",
+        description="Short description.",
         steps=["Step 1", "Step 2"],
         platforms=[
             ft.PagePlatform.WINDOWS,
@@ -74,12 +76,12 @@ META = register(
             ft.PagePlatform.ANDROID,
             ft.PagePlatform.IOS,
         ],
-        on_complete_schema={"campo": "str"},
+        on_complete_schema={"field": "str"},
     )
 )
 ```
 
-### 3. Definir o state reativo
+### 3. Define the reactive state
 
 ```python
 from dataclasses import dataclass
@@ -90,37 +92,37 @@ from flet_wizards.core import BaseWizardState
 
 @ft.observable
 @dataclass
-class MeuState(BaseWizardState):
+class MyState(BaseWizardState):
     TOTAL_STEPS: ClassVar[int] = 2
-    campo: str = ""
+    field: str = ""
 
     def reset(self) -> None:
         super().reset()
-        self.campo = ""
+        self.field = ""
 ```
 
-### 4. Criar os step components em escopo de módulo
+### 4. Build step components at module scope
 
-`@ft.component` nunca aninhado dentro de outra função — o registro de hooks quebra e a UI congela silenciosamente.
+`@ft.component` must never be nested inside another function — hook registration breaks and the UI silently freezes.
 
 ```python
 @ft.component
-def StepA(state: MeuState) -> ft.Control:
+def StepA(state: MyState) -> ft.Control:
     ...
 ```
 
-### 5. Construir o wizard público
+### 5. Build the public wizard
 
-Use `WizardFrame` para wizards desktop+mobile com sidebar. Para mobile-first (Android/iOS apenas), construa o frame manualmente sem sidebar.
+Use `WizardFrame` for desktop+mobile wizards with a sidebar. For mobile-first wizards (Android/iOS only), build the frame manually without a sidebar.
 
 ```python
 @ft.component
-def MeuWizard(
+def MyWizard(
     theme: WizardTheme = WizardTheme.SLATE,
     on_complete: Callable[[dict], Any] | None = None,
     mock: bool = False,
 ) -> ft.Control:
-    state, _ = ft.use_state(MeuState(theme=theme))
+    state, _ = ft.use_state(MyState(theme=theme))
     return WizardFrame(
         state=state,
         step_labels=["A", "B"],
@@ -130,112 +132,112 @@ def MeuWizard(
     )
 ```
 
-### 6. Adicionar mock data
+### 6. Add mock data
 
 `src/flet_wizards/core/mock_data.py`:
 
 ```python
-MEU_TEMPLATE: dict = {"campo": "valor de exemplo"}
+MY_TEMPLATE: dict = {"field": "sample value"}
 ```
 
-### 7. Re-exportar no `src/flet_wizards/__init__.py`
+### 7. Re-export from `src/flet_wizards/__init__.py`
 
 ```python
-from flet_wizards.<categoria>.<nome> import MeuWizard
+from flet_wizards.<category>.<name> import MyWizard
 
-__all__ = [..., "MeuWizard"]
+__all__ = [..., "MyWizard"]
 ```
 
-### 8. Registrar no gallery
+### 8. Register in the gallery
 
-Importar o módulo em `src/gallery/app.py`. O `register()` é idempotente e o card é renderizado a partir do registry.
+Import the module from `src/gallery/app.py`. `register()` is idempotent and the card is rendered from the registry.
 
-### 9. Documentar
+### 9. Document
 
-Criar `docs/<categoria>/<nome>.md` seguindo a estrutura padrão (descrição, steps, campos por step, plataformas, retorno de `on_complete`, exemplo de uso, mock data).
+Create `docs/<category>/<name>.md` following the standard structure (description, steps, fields per step, platforms, `on_complete` return value, usage example, mock data).
 
-### 10. Atualizar o CHANGELOG
+### 10. Update the CHANGELOG
 
-Adicionar entrada na próxima seção `[X.Y.Z]` do `CHANGELOG.md` seguindo Keep a Changelog.
+Add an entry under the next `[X.Y.Z]` section of `CHANGELOG.md`, following Keep a Changelog.
 
 ---
 
-## Convenções de código
+## Coding conventions
 
-### Proibido
-- `page.update()` em qualquer circunstância — Flet 0.85+ tem auto-update.
+### Forbidden
+- `page.update()` under any circumstance — Flet 0.85+ has auto-update.
 - `print()` — use `loguru.logger`.
-- Comentários inline — apenas docstrings técnicas.
-- Hex hardcoded fora do `WizardTheme` (exceto `#EF4444` erro, `#22C55E` sucesso, `#F59E0B` aviso).
-- `@ft.component` aninhado dentro de outra função.
+- Inline comments — only technical docstrings.
+- Hardcoded hex colors outside `WizardTheme` (exceptions: `#EF4444` error, `#22C55E` success, `#F59E0B` warning).
+- `@ft.component` nested inside another function.
 
-### Feedback ao usuário
+### User feedback
 
-Sempre via helpers do `flet_wizards.core.snack`:
+Always via helpers from `flet_wizards.core.snack`:
 
 ```python
 from flet_wizards.core import show_success, show_error, show_info
 ```
 
-O `SnackHost` é montado uma vez no topo do app (no exemplo do README isso já vem implícito; em apps que precisam de snacks fora dos wizards, monte explicitamente).
+`SnackHost` is mounted once at the top of the app (the README example does this implicitly; apps that need snacks outside wizards should mount it explicitly).
 
-### Animações
+### Animations
 
 ```python
-ft.Animation(300, ft.AnimationCurve.EASE_OUT_CUBIC)  # padrão geral
-# AnimatedSwitcher: duration=260, FADE, key=str(state.step) — obrigatório
+ft.Animation(300, ft.AnimationCurve.EASE_OUT_CUBIC)  # general default
+# AnimatedSwitcher: duration=260, FADE, key=str(state.step) — required
 ```
 
-### APIs Flet — inspecionar antes de usar
+### Flet APIs — inspect before using
 
 ```bash
-uv run python -c "import inspect, flet as ft; print(inspect.signature(ft.NomeDaClasse))"
+uv run python -c "import inspect, flet as ft; print(inspect.signature(ft.ClassName))"
 ```
 
-Armadilhas já mapeadas:
-- `ft.Dropdown` → `on_select` (não `on_change`)
-- `ft.Image` → `ft.BoxFit` (não `ft.ImageFit` — não existe)
-- `ft.PagePlatform` → sem `.WEB` (usar `page.web`)
-- `ft.use_dialog(control)` → recebe control ou None, não retorna tupla
-- `page.push_route()` → é coroutine, precisa de `await`
+Pitfalls already mapped:
+- `ft.Dropdown` → `on_select` (not `on_change`)
+- `ft.Image` → `ft.BoxFit` (not `ft.ImageFit` — does not exist)
+- `ft.PagePlatform` → has no `.WEB` (use `page.web`)
+- `ft.use_dialog(control)` → accepts a control or None, does not return a tuple
+- `page.push_route()` → is a coroutine, requires `await`
 
-### Padrão híbrido de estado
+### Hybrid state pattern
 
-Cada campo de formulário combina `use_state` local com estado global:
+Every form field combines local `use_state` with the global state:
 
 ```python
-campo_v, set_campo = ft.use_state(state.campo)
+field_v, set_field = ft.use_state(state.field)
 
 def on_change(e):
-    set_campo(e.control.value)      # reatividade imediata no TextField
-    state.campo = e.control.value    # persistência entre steps
+    set_field(e.control.value)      # immediate reactivity in the TextField
+    state.field = e.control.value    # persistence across steps
 ```
 
-Sem o `use_state` local, o campo não reage enquanto o usuário digita.
-Sem o `state.campo =`, o valor se perde ao navegar entre steps.
+Without the local `use_state`, the field does not react while the user types.
+Without `state.field =`, the value is lost when navigating between steps.
 
-### Mobile-first — diferenças
+### Mobile-first — differences
 
-Se `platforms=[ANDROID, IOS]`:
-1. Não usar `WizardFrame` — ele tem sidebar desktop.
-2. Construir frame próprio: header com dots, conteúdo centralizado, botão no bottom.
-3. Altura mínima de 48px em elementos clicáveis.
-4. `keyboard_type` correto em cada `TextField` (`NUMBER`, `EMAIL`).
+When `platforms=[ANDROID, IOS]`:
+1. Do not use `WizardFrame` — it ships with a desktop sidebar.
+2. Build your own frame: header with dots, centered content, button at the bottom.
+3. Minimum 48px height on clickable elements.
+4. Correct `keyboard_type` on every `TextField` (`NUMBER`, `EMAIL`).
 
 ---
 
 ## Releases
 
-Releases seguem [SemVer](https://semver.org/):
-- **Patch** (0.0.X): bug fix sem quebrar API.
-- **Minor** (0.X.0): feature nova sem quebrar API.
-- **Major** (X.0.0): quebra de API.
+Releases follow [SemVer](https://semver.org/):
+- **Patch** (0.0.X): bug fix without breaking the API.
+- **Minor** (0.X.0): new feature without breaking the API.
+- **Major** (X.0.0): API break.
 
-Fluxo:
+Flow:
 
 ```bash
-# bumpar pyproject.toml e src/flet_wizards/__init__.py
-# atualizar CHANGELOG.md
+# bump pyproject.toml and src/flet_wizards/__init__.py
+# update CHANGELOG.md
 uv sync
 git add pyproject.toml src/flet_wizards/__init__.py CHANGELOG.md uv.lock
 git commit -m "chore: bump version to X.Y.Z"
@@ -244,10 +246,10 @@ git tag vX.Y.Z
 git push origin vX.Y.Z
 ```
 
-O workflow `publish.yml` cuida do upload no PyPI via Trusted Publisher OIDC.
+The `publish.yml` workflow handles the PyPI upload via Trusted Publisher OIDC.
 
 ---
 
-## Reportar bugs
+## Reporting bugs
 
 [github.com/Alisonsantos77/flet-wizards/issues](https://github.com/Alisonsantos77/flet-wizards/issues)

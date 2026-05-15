@@ -1,26 +1,28 @@
 # flet-wizards
 
+🌐 [Português](README.pt-BR.md) | **English**
+
 [![PyPI version](https://img.shields.io/pypi/v/flet-wizards.svg)](https://pypi.org/project/flet-wizards/)
 [![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/)
 [![Flet](https://img.shields.io/badge/flet-0.85+-purple.svg)](https://flet.dev)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 
-Templates de wizard multi-step prontos para Flet — autenticação, perfil, onboarding e survey.
-Cada template é uma `@ft.component` autocontida com estado reativo, sistema de temas dark/light e callback `on_complete` tipado.
+Ready-made multi-step wizard templates for Flet — authentication, profile, onboarding and survey.
+Each template is a self-contained `@ft.component` with reactive state, a dark/light theme system and a typed `on_complete` callback.
 
 ---
 
-## Instalação
+## Installation
 
 ```bash
 pip install flet-wizards
 ```
 
-Requer **Python 3.12+** e **Flet 0.85+**.
+Requires **Python 3.12+** and **Flet 0.85+**.
 
 ---
 
-## Uso rápido
+## Quick start
 
 ```python
 import flet as ft
@@ -31,7 +33,7 @@ from flet_wizards import AuthLoginWizard, WizardTheme
 def App() -> ft.Control:
     async def handle_login(data: dict) -> None:
         email = data["email"]
-        # autenticar...
+        # authenticate...
 
     return AuthLoginWizard(
         theme=WizardTheme.SLATE,
@@ -48,7 +50,7 @@ async def main(page: ft.Page) -> None:
 ft.run(main)
 ```
 
-Todos os wizards são importados a partir da raiz do pacote:
+Every wizard is imported from the package root:
 
 ```python
 from flet_wizards import (
@@ -61,29 +63,29 @@ from flet_wizards import (
 
 ---
 
-## Templates disponíveis
+## Available templates
 
-| Categoria | Classe | Steps | Descrição | Docs |
+| Category | Class | Steps | Description | Docs |
 |---|---|---|---|---|
-| `auth` | `AuthLoginWizard` | 2 | Login com e-mail e senha + tela de confirmação. | [docs/auth/login.md](docs/auth/login.md) |
-| `auth` | `AuthRegisterWizard` | 3 | Cadastro com conta, perfil e revisão. | [docs/auth/register.md](docs/auth/register.md) |
-| `auth` | `AuthRecoveryWizard` | 3 | Recuperação de senha com código de 6 dígitos e força animada. | [docs/auth/recovery.md](docs/auth/recovery.md) |
-| `auth` | `AuthTwoFactorWizard` | 1 | Verificação 2FA mobile-first com 6 dígitos individuais. | [docs/auth/two_factor.md](docs/auth/two_factor.md) |
-| `profile` | `ProfileSetupWizard` | 3 | Onboarding com identidade, bio, interesses e preferências. | [docs/profile/setup.md](docs/profile/setup.md) |
-| `profile` | `ProfileEditWizard` | 3 | Edição com diff visual destacando apenas campos alterados. | [docs/profile/edit.md](docs/profile/edit.md) |
-| `profile` | `ProfileAvatarWizard` | 3 | Avatar via URL ou iniciais com preview ao vivo. | [docs/profile/avatar.md](docs/profile/avatar.md) |
-| `onboarding` | `OnboardingWalkthroughWizard` | 4 | Walkthrough mobile fullscreen em 4 slides. | [docs/onboarding/walkthrough.md](docs/onboarding/walkthrough.md) |
-| `survey` | `SurveyFeedbackWizard` | 3 | Survey conversacional com NPS, comentário e categoria. | [docs/survey/feedback.md](docs/survey/feedback.md) |
+| `auth` | `AuthLoginWizard` | 2 | Email and password login plus confirmation screen. | [docs/auth/login.md](docs/auth/login.md) |
+| `auth` | `AuthRegisterWizard` | 3 | Sign-up with account, profile and review. | [docs/auth/register.md](docs/auth/register.md) |
+| `auth` | `AuthRecoveryWizard` | 3 | Password recovery with a 6-digit code and animated strength meter. | [docs/auth/recovery.md](docs/auth/recovery.md) |
+| `auth` | `AuthTwoFactorWizard` | 1 | Mobile-first 2FA verification with six individual digits. | [docs/auth/two_factor.md](docs/auth/two_factor.md) |
+| `profile` | `ProfileSetupWizard` | 3 | Onboarding with identity, bio, interests and preferences. | [docs/profile/setup.md](docs/profile/setup.md) |
+| `profile` | `ProfileEditWizard` | 3 | Editing flow with a visual diff highlighting only the changed fields. | [docs/profile/edit.md](docs/profile/edit.md) |
+| `profile` | `ProfileAvatarWizard` | 3 | Avatar via URL or initials with live preview. | [docs/profile/avatar.md](docs/profile/avatar.md) |
+| `onboarding` | `OnboardingWalkthroughWizard` | 4 | Mobile fullscreen walkthrough across 4 slides. | [docs/onboarding/walkthrough.md](docs/onboarding/walkthrough.md) |
+| `survey` | `SurveyFeedbackWizard` | 3 | Conversational survey with NPS, comment and category. | [docs/survey/feedback.md](docs/survey/feedback.md) |
 
-Os wizards `AuthTwoFactorWizard`, `OnboardingWalkthroughWizard` e `SurveyFeedbackWizard` são mobile-first (Android / iOS). Quando abertos em desktop, o `PlatformGuard` exibe aviso com botão "Continuar mesmo assim".
+`AuthTwoFactorWizard`, `OnboardingWalkthroughWizard` and `SurveyFeedbackWizard` are mobile-first (Android / iOS). When opened on desktop, `PlatformGuard` shows a notice with a "Continue anyway" button.
 
 ---
 
-## Temas
+## Themes
 
-A lib expõe 7 pares de temas, cada um em duas variantes (dark e light), totalizando 14 paletas internas. O dev escolhe pelo nome do par:
+The library exposes 7 theme pairs, each with two variants (dark and light), for a total of 14 internal palettes. You pick a theme by the pair name:
 
-| Par | Dark primary | Light primary |
+| Pair | Dark primary | Light primary |
 |---|---|---|
 | Slate | `#7C6EF6` | `#6366F1` |
 | Emerald | `#6EE7B7` | `#059669` |
@@ -93,16 +95,16 @@ A lib expõe 7 pares de temas, cada um em duas variantes (dark e light), totaliz
 | Crimson | `#DE1F26` | `#B91C1C` |
 | Frost | `#60A5FA` | `#0052FF` |
 
-### Uso direto
+### Direct use
 
 ```python
 from flet_wizards import WizardTheme
 
-AuthLoginWizard(theme=WizardTheme.SLATE)        # variante dark
-AuthLoginWizard(theme=WizardTheme.SLATE_LIGHT)  # variante light
+AuthLoginWizard(theme=WizardTheme.SLATE)        # dark variant
+AuthLoginWizard(theme=WizardTheme.SLATE_LIGHT)  # light variant
 ```
 
-### Detecção automática (dark/light do sistema)
+### Automatic detection (system dark/light)
 
 ```python
 import flet as ft
@@ -117,18 +119,18 @@ def App() -> ft.Control:
     return AuthLoginWizard(theme=theme)
 ```
 
-`resolve_theme(theme, mode)` devolve a variante correta:
-- `ft.ThemeMode.DARK` → variante dark do par.
-- `ft.ThemeMode.LIGHT` → variante light do par.
-- `ft.ThemeMode.SYSTEM` → consulta `page.platform_brightness` e cai em dark como fallback fora de contexto reativo.
+`resolve_theme(theme, mode)` returns the correct variant:
+- `ft.ThemeMode.DARK` → dark variant of the pair.
+- `ft.ThemeMode.LIGHT` → light variant of the pair.
+- `ft.ThemeMode.SYSTEM` → reads `page.platform_brightness` and falls back to dark when outside a reactive context.
 
-Detalhes em [docs/themes.md](docs/themes.md).
+Full details in [docs/themes.md](docs/themes.md).
 
 ---
 
-## Preview local de desenvolvimento
+## Local development preview
 
-Para inspecionar os wizards visualmente durante o desenvolvimento:
+To inspect the wizards visually during development:
 
 ```powershell
 git clone https://github.com/Alisonsantos77/flet-wizards
@@ -137,24 +139,24 @@ uv sync
 uv run flet run
 ```
 
-Abre uma janela com todos os 9 templates lado a lado, com seletor de tema e modo dark/light. O código do preview vive em `src/gallery/` e **não** faz parte do pacote distribuído no PyPI — é apenas ferramenta de inspeção local.
+This opens a window with all 9 templates side by side, including theme and dark/light mode selectors. The preview code lives in `src/gallery/` and is **not** part of the package published on PyPI — it is a local inspection tool only.
 
 ---
 
-## Demo interativa
+## Live demo
 
-Veja todos os templates ao vivo no projeto de demonstração:
+See every template running live in the companion demo project:
 
 [flet-wizards-gallery](https://github.com/Alisonsantos77/flet-wizards-gallery)
 
 ---
 
-## Contribuindo
+## Contributing
 
-Veja [CONTRIBUTING.md](CONTRIBUTING.md) para instruções de como adicionar templates e convenções do projeto.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidance on adding new templates and the project conventions.
 
 ---
 
-## Licença
+## License
 
 [MIT](./LICENSE) © Alison Santos
